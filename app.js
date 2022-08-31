@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
+const transactionRoutes = require("./routes/transaction");
 
 const app = express();
 const MONGO_URL =
@@ -23,8 +24,10 @@ app.use((req, res, next) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/transactions", transactionRoutes);
 
 app.use((err, req, res, next) => {
+  console.log(err);
   res.status(err.statusCode || 500).json({
     message: err.message,
     data: err.data,
