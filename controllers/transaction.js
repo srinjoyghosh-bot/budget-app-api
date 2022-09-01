@@ -1,5 +1,5 @@
 const Transaction = require("../models/transaction");
-const User=require("../models/user")
+const User = require("../models/user");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 
@@ -35,19 +35,21 @@ exports.addTransaction = async (req, res, next) => {
     const error = new Error("Validation failed,entered data is incorrect");
     error.statusCode = 422;
     error.data = errors;
-    throw error;
+    // throw error;
+    next(error);
   }
   try {
     const title = req.body.title;
     const amount = req.body.amount;
     const t_type = req.body.type;
     const t_category = req.body.category;
-    const userId=req.body.userId;
-    const user=await User.findById(userId);
-    if(!user){
+    const userId = req.body.userId;
+    const user = await User.findById(userId);
+    if (!user) {
       const error = new Error("User does not exist for this email");
       error.statusCode = 401;
-      throw error;
+      // throw error;
+      next(error);
     }
     const transaction = new Transaction({
       title: title,

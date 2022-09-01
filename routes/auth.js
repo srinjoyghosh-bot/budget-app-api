@@ -21,6 +21,7 @@ router.put(
       .normalizeEmail(),
     body("password").trim().isLength({ min: 5 }),
     body("username").trim().not().isEmpty(),
+    body("budget").trim().not().isEmpty().isDecimal(),
   ],
   authController.signup
 );
@@ -37,4 +38,20 @@ router.post(
   authController.login
 );
 
-module.exports=router;
+router.post(
+  "/change-password",
+  [
+    body("oldPassword").trim().isLength({ min: 5 }),
+    body("newPassword").trim().isLength({ min: 5 }),
+    body("confirmPassword").trim().isLength({ min: 5 }),
+  ],
+  authController.changePassword
+);
+
+router.post(
+  "/update-budget",
+  [body("budget").trim().not().isEmpty().isDecimal()],
+  authController.updateBudget
+);
+
+module.exports = router;
