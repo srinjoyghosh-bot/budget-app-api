@@ -3,10 +3,11 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const transactionRoutes = require("./routes/transaction");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const app = express();
-const MONGO_URL =
-  "mongodb+srv://srinjoy:ZmUiUFEeAJLCkQZQ@cluster0.qkd0v.mongodb.net/budget?retryWrites=true&w=majority";
 
 app.use(bodyParser.json());
 
@@ -34,11 +35,12 @@ app.use((err, req, res, next) => {
   });
 });
 
+
 mongoose
-  .connect(MONGO_URL)
+  .connect(process.env.MONGO_URL)
   .then((result) => {
     // console.log(result);
-    app.listen(8080);
+    app.listen(process.env.PORT);
   })
   .catch((err) => {
     console.log(err);
