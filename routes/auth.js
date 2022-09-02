@@ -54,4 +54,6 @@ router.post(
   authController.updateBudget
 );
 
+router.get("/profile", authController.getProfile);
+
 module.exports = router;

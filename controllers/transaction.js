@@ -46,7 +46,7 @@ exports.addTransaction = async (req, res, next) => {
     const userId = req.body.userId;
     const user = await User.findById(userId);
     if (!user) {
-      const error = new Error("User does not exist for this email");
+      const error = new Error("User does not exist for this id");
       error.statusCode = 401;
       // throw error;
       next(error);

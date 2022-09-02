@@ -36,6 +36,13 @@ exports.signup = async (req, res, next) => {
       const password = req.body.password;
       const budget = req.body.budget;
       const hashedPw = await bcrypt.hash(password, 12);
+      const check = await User.findOne({ email: email });
+      if (check) {
+        const error = new Error("Email already exists");
+        error.statusCode = 409;
+        error.data = errors;
+        next(error);
+      }
       const user = new User({
         email: email,
         password: hashedPw,
@@ -146,6 +153,28 @@ exports.updateBudget = async (req, res, next) => {
     res.status(200).json({
       message: "Budget Updated",
       budget: budget,
+    });
+  } catch (error) {
+    throwError(error, next);
+  }
+};
+
+exports.getProfile = async (req, res, next) => {
+  try {
+    const userId = req.body.userId;
+    if (!userId) {
+      const error = new Error("User id not provided");
+      error.statusCode = 422;
+      next(error);
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      const error = new Error("User not found");
+      error.statusCode = 404;
+      next(error);
+    }
+    res.status(200).json({
+      user: user,
     });
   } catch (error) {
     throwError(error, next);
