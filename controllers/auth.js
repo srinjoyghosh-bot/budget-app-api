@@ -161,7 +161,7 @@ exports.updateBudget = async (req, res, next) => {
 
 exports.getProfile = async (req, res, next) => {
   try {
-    const userId = req.body.userId;
+    const userId = req.params.id;
     if (!userId) {
       const error = new Error("User id not provided");
       error.statusCode = 422;
