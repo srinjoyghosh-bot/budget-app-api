@@ -19,7 +19,7 @@ exports.getTransactions = async (req, res, next) => {
       date = new Date(req.query.date);
     }
     const transactions = await Transaction.find({
-      userId: req.body.userId,
+      userId: req.params.id,
     });
     let t_list;
     if (!transactions) {

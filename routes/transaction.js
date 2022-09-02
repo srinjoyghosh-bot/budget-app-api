@@ -5,7 +5,7 @@ const isAuth = require("../middleware/isauth");
 
 const router = express.Router();
 
-router.get("/get", transactionController.getTransactions);
+router.get("/get/:id", transactionController.getTransactions);
 
 router.post(
   "/add",
