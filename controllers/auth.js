@@ -29,29 +29,30 @@ exports.signup = async (req, res, next) => {
     error.data = errors;
     next(error);
     // throw error;
-  }
-  try {
-    const email = req.body.email;
-    const username = req.body.username;
-    const password = req.body.password;
-    const budget = req.body.budget;
-    const hashedPw = await bcrypt.hash(password, 12);
-    const user = new User({
-      email: email,
-      password: hashedPw,
-      username: username,
-      budget: budget || "0",
-    });
-    const result = await user.save();
-    res.status(201).json({
-      message: "User created",
-      user: result,
-    });
-  } catch (error) {
-    if (!error.statusCode) {
-      error.statusCode = 500;
+  } else {
+    try {
+      const email = req.body.email;
+      const username = req.body.username;
+      const password = req.body.password;
+      const budget = req.body.budget;
+      const hashedPw = await bcrypt.hash(password, 12);
+      const user = new User({
+        email: email,
+        password: hashedPw,
+        username: username,
+        budget: budget || "0",
+      });
+      const result = await user.save();
+      res.status(201).json({
+        message: "User created",
+        user: result,
+      });
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
     }
-    next(error);
   }
 };
 
@@ -147,6 +148,6 @@ exports.updateBudget = async (req, res, next) => {
       budget: budget,
     });
   } catch (error) {
-    throwError(err, next);
+    throwError(error, next);
   }
 };
