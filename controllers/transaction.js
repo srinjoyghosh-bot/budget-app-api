@@ -12,6 +12,12 @@ const throwError = (err, next) => {
 
 exports.getTransactions = async (req, res, next) => {
   try {
+    let date;
+    if (!req.query.date) {
+      date = new Date();
+    } else {
+      date = new Date(req.query.date);
+    }
     const transactions = await Transaction.find({
       userId: req.body.userId,
     });
@@ -19,6 +25,18 @@ exports.getTransactions = async (req, res, next) => {
     if (!transactions) {
       t_list = [];
     } else {
+      transactions.filter((transaction) => {
+        const t_date = new Date(transaction.createdAt);
+        if (
+          t_date.getDate === date.getDate &&
+          t_date.getFullYear === date.getFullYear &&
+          t_date.getMonth === date.getMonth
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      });
       t_list = transactions;
     }
     res.status(200).json({

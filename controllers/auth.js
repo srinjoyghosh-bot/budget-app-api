@@ -172,10 +172,12 @@ exports.getProfile = async (req, res, next) => {
       const error = new Error("User not found");
       error.statusCode = 404;
       next(error);
+    }else{
+      res.status(200).json({
+        user: user,
+      });
     }
-    res.status(200).json({
-      user: user,
-    });
+   
   } catch (error) {
     throwError(error, next);
   }
