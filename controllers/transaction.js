@@ -25,19 +25,24 @@ exports.getTransactions = async (req, res, next) => {
     if (!transactions) {
       t_list = [];
     } else {
-      transactions.filter((transaction) => {
+      t_list=transactions.filter((transaction) => {
         const t_date = new Date(transaction.createdAt);
+        // console.log(t_date.getDate());
+        // console.log( date.getDate());
+        // console.log(t_date.getFullYear());
+        // console.log(date.getFullYear());
+        // console.log(t_date.getMonth());
+        // console.log(date.getMonth());
         if (
-          t_date.getDate === date.getDate &&
-          t_date.getFullYear === date.getFullYear &&
-          t_date.getMonth === date.getMonth
+          t_date.getDate() === date.getDate() &&
+          t_date.getFullYear() === date.getFullYear() &&
+          t_date.getMonth() === date.getMonth()
         ) {
           return true;
         } else {
           return false;
         }
       });
-      t_list = transactions;
     }
     res.status(200).json({
       transactions: t_list,
