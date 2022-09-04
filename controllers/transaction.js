@@ -100,69 +100,76 @@ exports.getStats = async (req, res, next) => {
   try {
     const userId = req.params.id;
     const transactions = await Transaction.find({ userId: userId });
-    console.log(transactions);
+
     const date = new Date();
-    const t_list = transactions.filter((transaction) => {
-      const t_date = new Date(transaction.createdAt);
-      if (
-        date.getMonth() === t_date.getMonth() &&
-        date.getFullYear() == t_date.getFullYear()
-      ) {
-        return true;
-      }
-      return false;
-    });
+    let t_list;
     let monthly = 0;
     let food = 0;
     let clothes = 0;
     let travel = 0;
     let miscellaneous = 0;
-    t_list.forEach((transaction, index) => {
-      const amount = parseFloat(transaction.amount);
-      if (transaction.t_type == "spent") {
-        monthly += amount;
-      } else {
-        monthly -= amount;
-      }
+    if (!transactions) {
+      t_list = [];
+    } else {
+      t_list = transactions.filter((transaction) => {
+        const t_date = new Date(transaction.createdAt);
+        if (
+          date.getMonth() === t_date.getMonth() &&
+          date.getFullYear() == t_date.getFullYear()
+        ) {
+          return true;
+        }
+        return false;
+      });
 
-      switch (transaction.t_category) {
-        case "food":
-          if (transaction.t_type == "spent") {
-            food += amount;
-          } else {
-            food -= amount;
-          }
-          break;
-        case "clothes":
-          if (transaction.t_type == "spent") {
-            clothes += amount;
-          } else {
-            clothes -= amount;
-          }
-          break;
-        case "travel":
-          if (transaction.t_type == "spent") {
-            travel += amount;
-          } else {
-            travel -= amount;
-          }
-          break;
-        case "miscellaneous":
-          if (transaction.t_type == "spent") {
-            miscellaneous += amount;
-          } else {
-            miscellaneous -= amount;
-          }
-          break;
-        default:
-          if (transaction.t_type == "spent") {
-            miscellaneous += amount;
-          } else {
-            miscellaneous -= amount;
-          }
-          break;
-      }
-    });
+      t_list.forEach((transaction, index) => {
+        const amount = parseFloat(transaction.amount);
+        if (transaction.t_type == "spent") {
+          monthly += amount;
+        } else {
+          monthly -= amount;
+        }
+
+        switch (transaction.t_category) {
+          case "food":
+            if (transaction.t_type == "spent") {
+              food += amount;
+            } else {
+              food -= amount;
+            }
+            break;
+          case "clothes":
+            if (transaction.t_type == "spent") {
+              clothes += amount;
+            } else {
+              clothes -= amount;
+            }
+            break;
+          case "travel":
+            if (transaction.t_type == "spent") {
+              travel += amount;
+            } else {
+              travel -= amount;
+            }
+            break;
+          case "miscellaneous":
+            if (transaction.t_type == "spent") {
+              miscellaneous += amount;
+            } else {
+              miscellaneous -= amount;
+            }
+            break;
+          default:
+            if (transaction.t_type == "spent") {
+              miscellaneous += amount;
+            } else {
+              miscellaneous -= amount;
+            }
+            break;
+        }
+      });
+    }
+
     res.status(200).json({
       net_total_spent: monthly,
       food_cost: food,
