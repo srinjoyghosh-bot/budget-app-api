@@ -20,4 +20,6 @@ router.post(
   transactionController.addTransaction
 );
 
+router.get("/stats/:id", transactionController.getStats);
+
 module.exports = router;
