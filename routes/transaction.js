@@ -22,4 +22,6 @@ router.post(
 
 router.get("/stats/:id", transactionController.getStats);
 
+router.get("/history/:id", transactionController.getHistory);
+
 module.exports = router;

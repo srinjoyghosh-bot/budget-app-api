@@ -2,7 +2,26 @@ const Transaction = require("../models/transaction");
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
-const transaction = require("../models/transaction");
+
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+const getMapKey = (date) => {
+  const month = months[date.getMonth];
+  return month + "_" + date.getFullYear;
+};
 
 const throwError = (err, next) => {
   if (!err.statusCode) {
@@ -179,9 +198,48 @@ exports.getStats = async (req, res, next) => {
   }
 };
 
-exports.getChartData = async (req, res, next) => {
-  const userId = req.params.id;
-  const transactions = await Transaction.find({ userId: userId });
-
-  const date = new Date();
+exports.getHistory = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    let t_list;
+    const transactions = await Transaction.find({ userId: userId }).sort({
+      createdAt: -1,
+    });
+    if (!transactions) {
+      t_list = [];
+    } else {
+      t_list = transactions.filter((transaction) => {
+        const t_date = new Date(transaction.createdAt);
+        if (
+          date.getMonth() === t_date.getMonth() &&
+          date.getFullYear() == t_date.getFullYear()
+        ) {
+          return false;
+        }
+        return true;
+      });
+    }
+    if (t_list.length === 0) {
+      return res.status(200).json({
+        data: null,
+      });
+    }
+    const map = new Map();
+    t_list.forEach((transaction, index) => {
+      const t_date = new Date(transaction.createdAt.split("+")[0]);
+      const key = getMapKey(t_date);
+      if (!map.has(key)) {
+        map.set(key, [transaction]);
+      } else {
+        const list = map.get(key);
+        list.push(transaction);
+        map.set(key, list);
+      }
+    });
+    res.status(200).json({
+      data: Object.fromEntries(map),
+    });
+  } catch (error) {
+    throwError(error, next);
+  }
 };
