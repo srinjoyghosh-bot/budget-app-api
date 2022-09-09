@@ -21,6 +21,8 @@ exports.getTransactions = async (req, res, next) => {
     }
     const transactions = await Transaction.find({
       userId: req.params.id,
+    }).sort({
+      createdAt: -1,
     });
     let t_list;
     if (!transactions) {
@@ -28,12 +30,6 @@ exports.getTransactions = async (req, res, next) => {
     } else {
       t_list = transactions.filter((transaction) => {
         const t_date = new Date(transaction.createdAt);
-        // console.log(t_date.getDate());
-        // console.log( date.getDate());
-        // console.log(t_date.getFullYear());
-        // console.log(date.getFullYear());
-        // console.log(t_date.getMonth());
-        // console.log(date.getMonth());
         if (
           t_date.getDate() === date.getDate() &&
           t_date.getFullYear() === date.getFullYear() &&
@@ -181,4 +177,11 @@ exports.getStats = async (req, res, next) => {
   } catch (error) {
     throwError(error, next);
   }
+};
+
+exports.getChartData = async (req, res, next) => {
+  const userId = req.params.id;
+  const transactions = await Transaction.find({ userId: userId });
+
+  const date = new Date();
 };
