@@ -19,8 +19,8 @@ const months = [
 ];
 
 const getMapKey = (date) => {
-  const month = months[date.getMonth];
-  return month + "_" + date.getFullYear;
+  const month = months[date.getMonth()];
+  return month + "_" + date.getFullYear();
 };
 
 const throwError = (err, next) => {
@@ -208,6 +208,7 @@ exports.getHistory = async (req, res, next) => {
     if (!transactions) {
       t_list = [];
     } else {
+      const date =new Date();
       t_list = transactions.filter((transaction) => {
         const t_date = new Date(transaction.createdAt);
         if (
@@ -226,7 +227,7 @@ exports.getHistory = async (req, res, next) => {
     }
     const map = new Map();
     t_list.forEach((transaction, index) => {
-      const t_date = new Date(transaction.createdAt.split("+")[0]);
+      const t_date = new Date(transaction.createdAt);
       const key = getMapKey(t_date);
       if (!map.has(key)) {
         map.set(key, [transaction]);
