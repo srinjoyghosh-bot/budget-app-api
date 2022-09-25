@@ -172,12 +172,46 @@ exports.getProfile = async (req, res, next) => {
       const error = new Error("User not found");
       error.statusCode = 404;
       next(error);
-    }else{
+    } else {
       res.status(200).json({
         user: user,
       });
     }
-   
+  } catch (error) {
+    throwError(error, next);
+  }
+};
+
+exports.editProfile = async (req, res, next) => {
+  const errors = validationResult(req).errors;
+  if (errors.length !== 0) {
+    const error = new Error("Validation failed,entered data is incorrect");
+    error.statusCode = 422;
+    error.data = errors;
+    return next(error);
+  }
+  try {
+    const userId = req.params.id;
+    if (!userId) {
+      const error = new Error("User id not provided");
+      error.statusCode = 422;
+      return next(error);
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      const error = new Error("User does not exist for this id");
+      error.status = 401;
+      return next(error);
+    }
+    const name = req.body.name;
+    const email = req.body.email;
+    user.username = name;
+    user.email = email;
+    await user.save();
+    res.status(200).json({
+      message: "User updated",
+      user: user,
+    });
   } catch (error) {
     throwError(error, next);
   }

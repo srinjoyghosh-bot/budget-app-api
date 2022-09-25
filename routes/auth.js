@@ -56,4 +56,31 @@ router.post(
 
 router.get("/profile/:id", authController.getProfile);
 
+router.put(
+  "/edit-profile/:id",
+  body("email")
+    .isEmail()
+    .withMessage("Please enter a email")
+    .custom(async (value, { req }) => {
+      const userFromId = await User.findById(req.params.id);
+      const userFromEmail = await User.findOne({ email: value });
+      // console.log(userFromId)
+      // console.log(userFromEmail);
+      if (!userFromId) {
+        return Promise.reject("Wrong id");
+      }
+      if (userFromEmail) {
+        console.log(userFromId.email.toString());
+        console.log(value);
+        if (value.toString() !== userFromId.email.toString()) {
+          console.log('rejecting');
+          return Promise.reject("Email already exists");
+        }
+      }
+    })
+    .normalizeEmail(),
+  body("name").trim().not().isEmpty(),
+  authController.editProfile
+);
+
 module.exports = router;

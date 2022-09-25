@@ -208,7 +208,7 @@ exports.getHistory = async (req, res, next) => {
     if (!transactions) {
       t_list = [];
     } else {
-      const date =new Date();
+      const date = new Date();
       t_list = transactions.filter((transaction) => {
         const t_date = new Date(transaction.createdAt);
         if (
