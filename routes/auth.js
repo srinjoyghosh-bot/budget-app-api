@@ -39,7 +39,7 @@ router.post(
   authController.login
 );
 
-router.post(
+router.put(
   "/change-password",
   [
     body("oldPassword").trim().isLength({ min: 5 }),
@@ -61,11 +61,12 @@ router.get("/profile", isAuth, authController.getProfile);
 
 router.put(
   "/edit-profile",
+  isAuth,
   body("email")
     .isEmail()
     .withMessage("Please enter a email")
     .custom(async (value, { req }) => {
-      const userFromId = await User.findById(req.params.id);
+      const userFromId = await User.findById(req.userId);
       const userFromEmail = await User.findOne({ email: value });
       // console.log(userFromId)
       // console.log(userFromEmail);
@@ -83,7 +84,7 @@ router.put(
     })
     .normalizeEmail(),
   body("name").trim().not().isEmpty(),
-  isAuth,
+
   authController.editProfile
 );
 
