@@ -39,7 +39,7 @@ exports.getTransactions = async (req, res, next) => {
       date = new Date(req.query.date);
     }
     const transactions = await Transaction.find({
-      userId: req.params.id,
+      userId: req.userId,
     }).sort({
       createdAt: -1,
     });
@@ -82,7 +82,7 @@ exports.addTransaction = async (req, res, next) => {
     const amount = req.body.amount;
     const t_type = req.body.type;
     const t_category = req.body.category;
-    const userId = req.body.userId;
+    const userId = req.userId;
     const user = await User.findById(userId);
     if (!user) {
       const error = new Error("User does not exist for this id");
@@ -207,7 +207,7 @@ exports.getStats = async (req, res, next) => {
 
 exports.getHistory = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const userId = req.userId;
     let t_list;
     const transactions = await Transaction.find({ userId: userId }).sort({
       createdAt: -1,

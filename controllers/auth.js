@@ -116,7 +116,7 @@ exports.changePassword = async (req, res, next) => {
     const oldPw = req.body.oldPassword;
     const newPw = req.body.newPassword;
     const confirmPw = req.body.confirmPassword;
-    const userId = req.body.userId;
+    const userId = req.userId;
     const user = await User.findById(userId);
     const isEqual = await bcrypt.compare(oldPw, user.password);
     if (!isEqual) {
@@ -146,7 +146,7 @@ exports.updateBudget = async (req, res, next) => {
   checkBodyData(req, next);
   try {
     const budget = req.body.budget;
-    const userId = req.body.userId;
+    const userId = req.userId;
     const user = await User.findById(userId);
     user.budget = budget;
     await user.save();
@@ -161,7 +161,7 @@ exports.updateBudget = async (req, res, next) => {
 
 exports.getProfile = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const userId = req.userId;
     if (!userId) {
       const error = new Error("User id not provided");
       error.statusCode = 422;
@@ -191,7 +191,7 @@ exports.editProfile = async (req, res, next) => {
     return next(error);
   }
   try {
-    const userId = req.params.id;
+    const userId = req.userId;
     if (!userId) {
       const error = new Error("User id not provided");
       error.statusCode = 422;

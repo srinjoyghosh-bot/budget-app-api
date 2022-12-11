@@ -5,7 +5,7 @@ const isAuth = require("../middleware/isauth");
 
 const router = express.Router();
 
-router.get("/get/:id", transactionController.getTransactions);
+router.get("/get",isAuth, transactionController.getTransactions);
 
 router.post(
   "/add",
@@ -16,12 +16,12 @@ router.post(
       .isDecimal()
       .withMessage("Please enter a proper amount"),
   ],
-  // isAuth,
+  isAuth,
   transactionController.addTransaction
 );
 
 router.get("/stats", isAuth, transactionController.getStats);
 
-router.get("/history/:id", transactionController.getHistory);
+router.get("/history",isAuth, transactionController.getHistory);
 
 module.exports = router;

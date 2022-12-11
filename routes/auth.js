@@ -2,6 +2,7 @@ const authController = require("../controllers/auth");
 const { body } = require("express-validator");
 const express = require("express");
 const User = require("../models/user");
+const isAuth = require("../middleware/isauth");
 
 const router = express.Router();
 
@@ -45,19 +46,21 @@ router.post(
     body("newPassword").trim().isLength({ min: 5 }),
     body("confirmPassword").trim().isLength({ min: 5 }),
   ],
+  isAuth,
   authController.changePassword
 );
 
-router.post(
+router.put(
   "/update-budget",
   [body("budget").trim().not().isEmpty().isDecimal()],
+  isAuth,
   authController.updateBudget
 );
 
-router.get("/profile/:id", authController.getProfile);
+router.get("/profile", isAuth, authController.getProfile);
 
 router.put(
-  "/edit-profile/:id",
+  "/edit-profile",
   body("email")
     .isEmail()
     .withMessage("Please enter a email")
@@ -73,13 +76,14 @@ router.put(
         console.log(userFromId.email.toString());
         console.log(value);
         if (value.toString() !== userFromId.email.toString()) {
-          console.log('rejecting');
+          console.log("rejecting");
           return Promise.reject("Email already exists");
         }
       }
     })
     .normalizeEmail(),
   body("name").trim().not().isEmpty(),
+  isAuth,
   authController.editProfile
 );
 
