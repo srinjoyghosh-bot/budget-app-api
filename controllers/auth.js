@@ -96,10 +96,10 @@ exports.login = async (req, res, next) => {
         budget: user.budget,
         userId: user._id.toString(),
       },
-      "mysecretsecret",
-      {
-        // expiresIn: "1h",
-      }
+      "mysecretsecret"
+      // {
+      //   // expiresIn: "1h",
+      // }
     );
     res.status(200).json({
       token: token,

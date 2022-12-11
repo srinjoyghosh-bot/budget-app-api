@@ -113,7 +113,14 @@ exports.addTransaction = async (req, res, next) => {
 
 exports.getStats = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    // const userId = req.params.id;
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(404).json({
+        message: "no user id",
+        userId: userId,
+      });
+    }
     const transactions = await Transaction.find({ userId: userId });
 
     const date = new Date();

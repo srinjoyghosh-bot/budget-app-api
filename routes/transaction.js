@@ -20,7 +20,7 @@ router.post(
   transactionController.addTransaction
 );
 
-router.get("/stats/:id", transactionController.getStats);
+router.get("/stats", isAuth, transactionController.getStats);
 
 router.get("/history/:id", transactionController.getHistory);
 
