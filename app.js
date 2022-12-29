@@ -54,9 +54,9 @@ app.use((err, req, res, next) => {
 });
 
 mongoose
-  .connect(process.env.MONGO_URL)
+  .connect("mongodb+srv://srinjoy:ZmUiUFEeAJLCkQZQ@cluster0.qkd0v.mongodb.net/budget?retryWrites=true&w=majority")
   .then((result) => {
-    app.listen(process.env.PORT);
+    app.listen(8080);
   })
   .catch((err) => {
     console.log(err);
